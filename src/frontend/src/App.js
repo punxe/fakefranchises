@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import { React, useRef }  from 'react';
 import './App.css';
 
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+
 function App() {
+
+  const nameInput = useRef();
+  console.log("app loaded");
+
+  const SOCKET_URL = `${process.env.REACT_APP_API_ROOT_URL}/game`;
+  console.log(SOCKET_URL);
+
+  let stompClient = null;
+  const userEnter = () => {
+    console.log("this thing is getting run 1");
+    stompClient = Stomp.over(new SockJS(SOCKET_URL));
+    stompClient.connect({}, onConnected, onError);
+    console.log("this thing is getting run 2");
+  }
+  const onConnected = () => {
+    console.log("connected successfully");
+  }
+  const onError = () => {
+    console.log("error occured while connecting");
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input ref = {nameInput} type="text" />
+      <button onClick={userEnter}>Enter</button>
+
     </div>
   );
 }
