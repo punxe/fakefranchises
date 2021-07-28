@@ -5,4 +5,7 @@ Do
 
 Then go to src/frontend and do
 >npm i
+
+and then do
+
 >npm i stompjs
