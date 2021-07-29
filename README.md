@@ -9,3 +9,7 @@ Then go to src/frontend and do
 and then do
 
 >npm i stompjs
+
+and then 
+
+> npm i react-router-dom

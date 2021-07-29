@@ -1,5 +1,5 @@
 package io.punxe.fakefranchises.model;
 
 public enum ActionType {
-    CONNECT, DISCONNECT, ROLL, CHALLENGE, JOINGAME, LEAVEGAME
+    MAKEROOM, JOINROOM, ROLL, CHALLENGE, JOINGAME, LEAVEGAME
 }
