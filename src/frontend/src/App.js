@@ -2,33 +2,34 @@ import { React, useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
 
 import {EntryPage} from './pages/EntryPage';
 import {HomePage} from './pages/HomePage';
 import {GamePage} from './pages/GamePage';
 
+import { WebSocketProvider } from './WebSocketContext';
+
 function App() {
 
-  const [stompClient, setStompClient] = useState();
 
   return (
+    <WebSocketProvider>
     <div className="App">
       <Router>
         <Switch>
           <Route path="/game/:teamCode">
-            <GamePage stompClient={stompClient}/>
+            <GamePage />
           </Route>
           <Route path="/home">
-            <HomePage stompClient={stompClient}/>
+            <HomePage />
           </Route>
           <Route path="/">
-            <EntryPage stompClient={stompClient}/>
+            <EntryPage />
             </Route>
         </Switch>
       </Router>
     </div>
+    </WebSocketProvider>
   );
 }
 

@@ -4,5 +4,5 @@ import { Router, Route, Switch } from "react-router-dom";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-export const GamePage = ({stompClient}) => {
+export const GamePage = () => {
 }
