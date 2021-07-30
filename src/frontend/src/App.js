@@ -7,7 +7,7 @@ import Stomp from "stompjs";
 
 import {EntryPage} from './pages/EntryPage';
 import {HomePage} from './pages/HomePage';
-import {GamePage} from './pages/EntryPage';
+import {GamePage} from './pages/GamePage';
 
 function App() {
 
@@ -18,14 +18,14 @@ function App() {
       <Router>
         <Switch>
           <Route path="/game/:teamCode">
-            <GamePage />
+            <GamePage stompClient={stompClient}/>
           </Route>
-          <Route path="/game/:teamCode">
-            <HomePage />
+          <Route path="/home">
+            <HomePage stompClient={stompClient}/>
           </Route>
           <Route path="/">
             <EntryPage stompClient={stompClient}/>
-          </Route>
+            </Route>
         </Switch>
       </Router>
     </div>

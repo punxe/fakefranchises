@@ -26,12 +26,12 @@ public class ActionController {
 
         return action;
     }
-    @MessageMapping("/game.newUser")
+    @MessageMapping("/home.newUser")
     @SendTo("/topic/public")
     public Action registerNewUser(@Payload Action action){
-        if(action.getType() == ActionType.CONNECT){
-            System.out.println(action.getSender() + " connected");
-        }
+       
+            System.out.println("Register New User Called");
+      
         return action;
     }
 }
