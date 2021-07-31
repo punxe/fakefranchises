@@ -9,30 +9,24 @@ import org.springframework.stereotype.Controller;
 import io.punxe.fakefranchises.model.Action;
 import io.punxe.fakefranchises.model.ActionType;
 import io.punxe.fakefranchises.model.GameManager;
+import io.punxe.fakefranchises.model.Message;
 
 @Controller
-public class ActionController {
+public class ChatController {
 
     private GameManager gameManager;
     
     @Autowired
-    public ActionController(GameManager gameManager){
+    public ChatController(GameManager gameManager){
         this.gameManager = gameManager;
     }
 
-    @MessageMapping("/game.action")
-    @SendTo("/topic/public")
-    public Action sendAction(@Payload Action action){
-
-        return action;
-    }
-    @MessageMapping("/home.newUser")
-    @SendTo("/topic/public")
-    public Action registerNewUser(@Payload Action action){
-       
-            System.out.println("Register New User Called");
+    @MessageMapping("/chat.sendMessage")
+    @SendTo("/topic/chat")
+    public Message manageChatMessage(@Payload Message message){
+        System.out.println("chat message recieved");
+            System.out.println(message.getSender() + "sent the message: " + message.getMessage());
       
-        return action;
+        return message;
     }
-   
 }

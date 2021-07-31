@@ -17,11 +17,11 @@ export const EntryPage = () => {
   const homePageRoute = "/home";
 
   const connect = () => {
-    webSocketObject.initializeWebSocket();
+    webSocketObject.initializeWebSocket(nameInput.current.value);
     history.push(homePageRoute);
   }
 
-  
+
   return (
     <div>
       <input ref={nameInput} type="text" />

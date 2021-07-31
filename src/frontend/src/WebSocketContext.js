@@ -9,13 +9,17 @@ const WebSocketObjectContext = React.createContext();
 const INITIALIZE_SOCKET_URL = `${process.env.REACT_APP_API_ROOT_URL}/game`;
 
 let WebSocketObject = {
+    username: "tempusername",
     stompClient: "null",
-    initializeWebSocket: () => {
+    chatMessages: [],
+    initializeWebSocket: (name) => {
+        WebSocketObject.username = name;
         WebSocketObject.stompClient = Stomp.over(new SockJS(INITIALIZE_SOCKET_URL));
         WebSocketObject.stompClient.connect({}, WebSocketObject.onConnect, WebSocketObject.onError);
     },
     onConnect: () => {
         WebSocketObject.stompClient.subscribe('/topic/public', WebSocketObject.onPublicMessageReceived);
+        WebSocketObject.stompClient.subscribe('/topic/chat', WebSocketObject.onChatMessageReceived);
         WebSocketObject.stompClient.send("/app/home.newUser", {}, JSON.stringify({type: "CONNECT", sender: "temp"}));
     },
     onError: () => {
@@ -23,6 +27,13 @@ let WebSocketObject = {
     },
     onPublicMessageReceived: () => {
         console.log("public message received");
+    },
+    onChatMessageReceived: (payload) => {
+        WebSocketObject.chatMessages.push(payload);
+    },
+    sendChatMessage: (m) => {
+        //console.log("run once");
+        WebSocketObject.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({sender: WebSocketObject.username, message: m}));
     }
 };
 
@@ -37,6 +48,8 @@ export function useWebSocketObject(){
 
 export function WebSocketProvider ({children}) {
     const [webSocketObject, setWebSocketObject] = useState(WebSocketObject);
+    const [webSocketObjectMessagesLength, setWebSocketObjectMessagesLength] = useState(WebSocketObject.chatMessages.length);
+    console.log("websocketprovider rerender");
 
     return(
         <WebSocketObjectContext.Provider value={webSocketObject}>
