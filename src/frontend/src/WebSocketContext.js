@@ -1,59 +1,71 @@
-import React, { useContext, useState} from 'react'
+import React, { useContext, useReducer } from 'react'
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
 
-const WebSocketObjectContext = React.createContext();
+const WebSocketContext = React.createContext();
 
 const INITIALIZE_SOCKET_URL = `${process.env.REACT_APP_API_ROOT_URL}/game`;
 
-let WebSocketObject = {
-    username: "tempusername",
-    stompClient: "null",
-    chatMessages: [],
-    initializeWebSocket: (name) => {
-        WebSocketObject.username = name;
-        WebSocketObject.stompClient = Stomp.over(new SockJS(INITIALIZE_SOCKET_URL));
-        WebSocketObject.stompClient.connect({}, WebSocketObject.onConnect, WebSocketObject.onError);
-    },
-    onConnect: () => {
-        WebSocketObject.stompClient.subscribe('/topic/public', WebSocketObject.onPublicMessageReceived);
-        WebSocketObject.stompClient.subscribe('/topic/chat', WebSocketObject.onChatMessageReceived);
-        WebSocketObject.stompClient.send("/app/home.newUser", {}, JSON.stringify({type: "CONNECT", sender: "temp"}));
-    },
-    onError: () => {
-        console.log("error initializing websocket");
-    },
-    onPublicMessageReceived: () => {
-        console.log("public message received");
-    },
-    onChatMessageReceived: (payload) => {
-        WebSocketObject.chatMessages.push(payload);
-    },
-    sendChatMessage: (m) => {
-        //console.log("run once");
-        WebSocketObject.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({sender: WebSocketObject.username, message: m}));
+
+let username;
+let stompClient;
+let dispatcher;
+
+export const ACTIONS = {
+    CONNECT: 'connect',
+    SEND_MESSAGE: 'sendMessage',
+    RECEIVE_MESSAGE: 'receiveMessage'
+}
+
+export function useWebSocket() {
+    return useContext(WebSocketContext);
+}
+
+function reducer(state, action){
+    switch(action.type){
+        case ACTIONS.CONNECT:
+            username = action.payload.name;
+            stompClient = Stomp.over(new SockJS(INITIALIZE_SOCKET_URL));
+            stompClient.connect({}, onConnect, onError);
+            return state;
+        case ACTIONS.SEND_MESSAGE:
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({ sender: username, message: action.payload.message }));
+            return state;
+        case ACTIONS.RECEIVE_MESSAGE:
+            return {messages: [...state.messages, action.payload.message]};
+        default:
+            return state;
     }
+}
+
+const onConnect = () => {
+    stompClient.subscribe('/topic/public', onPublicMessageReceived);
+    stompClient.subscribe('/topic/chat', onChatMessageReceived);
+    stompClient.send("/app/home.newUser", {}, JSON.stringify({ type: "CONNECT", sender: "temp" }));
+};
+const onPublicMessageReceived = (payload) => {
+    console.log("public message received");
+}
+const onChatMessageReceived = (payload) => {
+    console.log("public message received");
+    dispatcher({type: ACTIONS.RECEIVE_MESSAGE, payload: {message: JSON.parse(payload.body)}})
+}
+const onError = (error) => {
+    console.log("error connecting to websocket");
 };
 
 
+export function WebSocketProvider({ children }) {
 
-
-
-
-export function useWebSocketObject(){
-    return useContext(WebSocketObjectContext);
-}
-
-export function WebSocketProvider ({children}) {
-    const [webSocketObject, setWebSocketObject] = useState(WebSocketObject);
-    const [webSocketObjectMessagesLength, setWebSocketObjectMessagesLength] = useState(WebSocketObject.chatMessages.length);
+    const[state, dispatch] = useReducer(reducer, {messages: []});
+    dispatcher = dispatch;
     console.log("websocketprovider rerender");
 
-    return(
-        <WebSocketObjectContext.Provider value={webSocketObject}>
-            {children}
-        </WebSocketObjectContext.Provider>
+    return (
+        <WebSocketContext.Provider value={{dispatch: dispatch, state: state}}>
+                {children}
+        </WebSocketContext.Provider>
     )
 }

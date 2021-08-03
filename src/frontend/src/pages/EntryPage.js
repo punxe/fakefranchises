@@ -1,13 +1,11 @@
 import { React, useRef } from 'react';
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
-import { useWebSocketObject } from '../WebSocketContext';
+import { useWebSocket, ACTIONS } from '../WebSocketContext';
 
 export const EntryPage = () => {
 
-  const webSocketObject = useWebSocketObject();
+  const webSocket = useWebSocket();
 
   const nameInput = useRef("username");
   console.log("app loaded");
@@ -17,7 +15,7 @@ export const EntryPage = () => {
   const homePageRoute = "/home";
 
   const connect = () => {
-    webSocketObject.initializeWebSocket(nameInput.current.value);
+    webSocket.dispatch({type:ACTIONS.CONNECT, payload: {name:nameInput.current.value}});
     history.push(homePageRoute);
   }
 

@@ -12,6 +12,7 @@ import io.punxe.fakefranchises.model.GameManager;
 import io.punxe.fakefranchises.model.Message;
 
 @Controller
+
 public class ChatController {
 
     private GameManager gameManager;

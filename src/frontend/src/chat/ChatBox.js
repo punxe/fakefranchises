@@ -2,14 +2,18 @@ import { React } from 'react';
 
 import {ChatMessage} from './ChatMessage';
 
-export const ChatBox = ({messages}) => {
-    console.log("chat box rerender");
+import { useWebSocket } from '../WebSocketContext';
+
+export const ChatBox = () => {
+    const webSocket = useWebSocket();
     return(
         <div>
             {
-                messages.map(m => <ChatMessage message={m}/>)
+                webSocket.state.messages.map(
+                    m => <ChatMessage key={`${m.sender} ${m.message}`} message={m}/>)
+                
             }
-        
         </div>
+        
     )
 }
