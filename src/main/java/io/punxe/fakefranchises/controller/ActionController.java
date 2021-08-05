@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import io.punxe.fakefranchises.model.Action;
@@ -28,11 +29,10 @@ public class ActionController {
     }
     @MessageMapping("/home.newUser")
     @SendTo("/topic/public")
-    public Action registerNewUser(@Payload Action action){
-       
-            System.out.println("Register New User Called");
-      
-        return action;
+    public String[] registerNewUser(@Payload Action action, SimpMessageHeaderAccessor headerAccessor){
+        gameManager.addPlayer(action.getSender());
+        headerAccessor.getSessionAttributes().put("username", action.getSender());
+        return gameManager.getPlayerListByName();
     }
    
 }

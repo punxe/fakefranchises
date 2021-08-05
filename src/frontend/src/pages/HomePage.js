@@ -2,7 +2,11 @@ import { React, useRef } from 'react';
 
 
 import { ChatBox } from '../chat/ChatBox';
+import { OnlineUserList } from '../model/OnlineUserList';
 import { useWebSocket, ACTIONS } from '../WebSocketContext';
+
+//import "./HomePage.css";
+
 
 export const HomePage = () => {
   const webSocket = useWebSocket();
@@ -13,11 +17,12 @@ export const HomePage = () => {
     messageToSend.current.value = "";
   }
   return (
-    <div>
+    <div className="HomePage">
       <h1>HomePage</h1>
       <ChatBox />
       <input ref={messageToSend} type="text" />
       <button onClick={sendMessage}>Send Message</button>
+      <OnlineUserList />
     </div>
   );
 }

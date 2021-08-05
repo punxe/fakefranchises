@@ -24,10 +24,7 @@ public class ChatController {
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/chat")
-    public Message manageChatMessage(@Payload Message message){
-        System.out.println("chat message recieved");
-            System.out.println(message.getSender() + "sent the message: " + message.getMessage());
-      
+    public Message manageChatMessage(@Payload Message message){      
         return message;
     }
 }

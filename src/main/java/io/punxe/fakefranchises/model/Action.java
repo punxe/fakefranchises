@@ -4,6 +4,13 @@ public class Action {
     private ActionType type;
     private String sender;
     
+
+    
+    public Action(ActionType type, String sender) {
+        this.type = type;
+        this.sender = sender;
+    }
+    
     public ActionType getType() {
         return type;
     }
