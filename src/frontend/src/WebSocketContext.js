@@ -20,6 +20,7 @@ export const ACTIONS = {
     RECEIVE_MESSAGE: 'receiveMessage',
     USER_LIST_UPDATE: 'userListUpdate',
     CREATE_ROOM: 'newRoom',
+    JOIN_ROOM: 'joinRoom',
     ROOM_LIST_UPDATE: 'roomListUpdate'
 }
 
@@ -43,15 +44,25 @@ function reducer(state, action) {
             return { messages: [...state.messages, action.payload.message], onlineUsers: state.onlineUsers, rooms: state.rooms };
         case ACTIONS.CREATE_ROOM:
             roomCode = action.payload.code;
+            subscribeToRoom(roomCode);
             stompClient.send("/app/rooms.createRoom", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
             return state;
+        case ACTIONS.JOIN_ROOM:
+            roomCode = action.payload.code;
+            subscribeToRoom(roomCode);
+            stompClient.send("/app/rooms.joinRoom", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
         case ACTIONS.ROOM_LIST_UPDATE:
             return { messages: state.messages, onlineUsers: state.onlineUsers, rooms: action.payload.rooms };
         default:
             return state;
     }
 }
-
+const subscribeToRoom = (code) => {
+    stompClient.subscribe(`/topic/${code}`, onGameMessageReceived);
+}
+const onGameMessageReceived = () => {
+    //game logic
+}
 const onConnect = () => {
     stompClient.subscribe('/topic/public', onPublicMessageReceived);
     stompClient.subscribe('/topic/users', onUserMessageReceived);

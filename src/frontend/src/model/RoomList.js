@@ -15,12 +15,12 @@ export const RoomList = () => {
     const roomPageRoute = "/room";
   
     const createRoom = () => {
-      const roomId = makeId(4);
-      webSocket.dispatch({type: ACTIONS.CREATE_ROOM, payload: {code: roomId}});
-      history.push(`${roomPageRoute}/${roomId}`);
+      const roomCode = makeCode(4);
+      webSocket.dispatch({type: ACTIONS.CREATE_ROOM, payload: {code: roomCode}});
+      history.push(`${roomPageRoute}/${roomCode}`);
     }
   
-    const makeId = (length) => {
+    const makeCode = (length) => {
       let result = '';
       const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
       const charactersLength = characters.length;

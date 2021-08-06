@@ -38,9 +38,17 @@ public class MenuController {
 
     @MessageMapping("/rooms.createRoom")
     @SendTo("/topic/rooms")
-    public Room[] createRoom(@Payload Action action, SimpMessageHeaderAccessor headerAccessor){
+    public Room[] createRoom(@Payload Action action){
         gameManager.getPlayer(action.getSender()).setRoomCode(action.getRoomCode());
         gameManager.addRoom(action.getRoomCode(), action.getSender());
+        gameManager.getRoom(action.getRoomCode()).addPlayer(gameManager.getPlayer(action.getSender()));
+        return gameManager.getRoomList();
+    }
+
+    @MessageMapping("/rooms.joinRoom")
+    @SendTo("/topic/rooms")
+    public Room[] joinRoom(@Payload Action action){
+        gameManager.getPlayer(action.getSender()).setRoomCode(action.getRoomCode());
         gameManager.getRoom(action.getRoomCode()).addPlayer(gameManager.getPlayer(action.getSender()));
         return gameManager.getRoomList();
     }

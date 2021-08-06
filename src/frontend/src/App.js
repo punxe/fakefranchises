@@ -17,7 +17,7 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route path="/game/:teamCode">
+          <Route path="/room/:teamCode">
             <GamePage />
           </Route>
           <Route path="/home">
