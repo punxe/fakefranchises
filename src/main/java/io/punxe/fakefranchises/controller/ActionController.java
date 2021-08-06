@@ -27,12 +27,5 @@ public class ActionController {
 
         return action;
     }
-    @MessageMapping("/home.newUser")
-    @SendTo("/topic/public")
-    public String[] registerNewUser(@Payload Action action, SimpMessageHeaderAccessor headerAccessor){
-        gameManager.addPlayer(action.getSender());
-        headerAccessor.getSessionAttributes().put("username", action.getSender());
-        return gameManager.getPlayerListByName();
-    }
    
 }

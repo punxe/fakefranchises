@@ -8,7 +8,7 @@ export const OnlineUserList = () => {
         <div>
             <h3>ONLINE PLAYERS:</h3>
             {
-            webSocket.state.onlineUsers.map(u => <h4>{u}</h4>)
+            webSocket.state.onlineUsers.map(u => <h4 key={u}>{u}</h4>)
             }    
 
            

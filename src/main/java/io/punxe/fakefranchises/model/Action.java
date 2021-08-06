@@ -3,7 +3,7 @@ package io.punxe.fakefranchises.model;
 public class Action {
     private ActionType type;
     private String sender;
-    
+    private String roomCode;
 
     
     public Action(ActionType type, String sender) {
@@ -23,4 +23,13 @@ public class Action {
     public void setSender(String sender) {
         this.sender = sender;
     }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(String roomId) {
+        this.roomCode = roomId;
+    }
+    
 }

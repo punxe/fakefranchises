@@ -2,9 +2,10 @@ package io.punxe.fakefranchises.model;
 
 public class Player {
     private String name;
-
+    private String roomCode;
     public Player(String name){
         this.name = name;
+        roomCode = "-1";
     }
 
     public String getName() {
@@ -21,5 +22,14 @@ public class Player {
         }
         return this.getName().equals(((Player)obj).getName());
     }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
+    }
+    
     
 }

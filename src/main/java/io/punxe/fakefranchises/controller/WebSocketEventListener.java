@@ -15,25 +15,34 @@ import io.punxe.fakefranchises.model.GameManager;
 @Component
 public class WebSocketEventListener {
 	@Autowired
-    private GameManager gameManager;
+	private GameManager gameManager;
 
 	@Autowired
 	private SimpMessageSendingOperations sendingOperations;
-	
+
 	@EventListener
 	public void handleWebSocketConnectListener(final SessionConnectedEvent event) {
 
 	}
-	
+
 	@EventListener
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		String username = (String) headerAccessor.getSessionAttributes().get("username");
-		gameManager.removePlayer(username);
-		//Action action = new Action(ActionType.DISCONNECT, username);
-
-		sendingOperations.convertAndSend("/topic/public", gameManager.getPlayerListByName());
+		String thisPlayersRoomCode = gameManager.getPlayer(username).getRoomCode();
 		
+
+		if (!thisPlayersRoomCode.equals("-1")) {
+			gameManager.getRoom(thisPlayersRoomCode).removePlayer(username);
+			if (gameManager.getRoom(thisPlayersRoomCode).getPlayers().size() == 0) {
+				gameManager.removeRoom(thisPlayersRoomCode);
+			}
+			sendingOperations.convertAndSend("/topic/rooms", gameManager.getRoomList());
+		}
+		// Action action = new Action(ActionType.DISCONNECT, username);
+		gameManager.removePlayer(username);
+		sendingOperations.convertAndSend("/topic/users", gameManager.getPlayerListByName());
+
 	}
 
 }
