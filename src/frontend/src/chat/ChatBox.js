@@ -13,7 +13,7 @@ export const ChatBox = () => {
     const messageToSend = useRef("input your message");
 
     const sendMessage = () => {
-        webSocket.dispatch({ type: ACTIONS.SEND_MESSAGE, payload: { message: messageToSend.current.value } });
+        webSocket.dispatch({ type: ACTIONS.SEND_MESSAGE, payload: { data: messageToSend.current.value } });
         messageToSend.current.value = "";
     }
     return (
@@ -23,7 +23,7 @@ export const ChatBox = () => {
             </div>
             {
                 webSocket.state.messages.map(
-                    m => <ChatMessage key={`${m.sender} ${m.message}`} message={m} />)
+                    m => <ChatMessage key={`${m.sender} ${m.data}`} message={m} />)
             }
             <div>
                 <input ref={messageToSend} type="text" />

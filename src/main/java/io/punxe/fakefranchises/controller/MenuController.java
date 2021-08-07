@@ -5,6 +5,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 import io.punxe.fakefranchises.model.Action;
@@ -15,15 +16,14 @@ import io.punxe.fakefranchises.model.Room;
 @Controller
 public class MenuController {
 
-    private GameManager gameManager;
-    
     @Autowired
-    public MenuController(GameManager gameManager){
-        this.gameManager = gameManager;
-    }
+    private GameManager gameManager;
+
+    @Autowired
+	private SimpMessageSendingOperations sendingOperations;
 
     @MessageMapping("/home.newUser")
-    @SendTo("/topic/users")
+    @SendTo("/topic/users/homepage")
     public String[] registerNewUser(@Payload Action action, SimpMessageHeaderAccessor headerAccessor){
         gameManager.addPlayer(action.getSender());
         headerAccessor.getSessionAttributes().put("username", action.getSender());
@@ -42,6 +42,8 @@ public class MenuController {
         gameManager.getPlayer(action.getSender()).setRoomCode(action.getRoomCode());
         gameManager.addRoom(action.getRoomCode(), action.getSender());
         gameManager.getRoom(action.getRoomCode()).addPlayer(gameManager.getPlayer(action.getSender()));
+        //sendingOperations.convertAndSend("/topic/users/" + action.getRoomCode(), new Action(action.getRoomCode(), gameManager.getRoom(action.getRoomCode()).getPlayerListByName()));
+        sendingOperations.convertAndSend("/topic/users/" + action.getRoomCode(), gameManager.getRoom(action.getRoomCode()).getPlayerListByName());
         return gameManager.getRoomList();
     }
 
@@ -50,6 +52,8 @@ public class MenuController {
     public Room[] joinRoom(@Payload Action action){
         gameManager.getPlayer(action.getSender()).setRoomCode(action.getRoomCode());
         gameManager.getRoom(action.getRoomCode()).addPlayer(gameManager.getPlayer(action.getSender()));
+        //sendingOperations.convertAndSend("/topic/users/" + action.getRoomCode(), new Action(action.getRoomCode(), gameManager.getRoom(action.getRoomCode()).getPlayerListByName()));
+        sendingOperations.convertAndSend("/topic/users/" + action.getRoomCode(), gameManager.getRoom(action.getRoomCode()).getPlayerListByName());
         return gameManager.getRoomList();
     }
    

@@ -32,16 +32,17 @@ public class WebSocketEventListener {
 		String thisPlayersRoomCode = gameManager.getPlayer(username).getRoomCode();
 		
 
-		if (!thisPlayersRoomCode.equals("-1")) {
+		if (!thisPlayersRoomCode.equals("homepage")) {
 			gameManager.getRoom(thisPlayersRoomCode).removePlayer(username);
 			if (gameManager.getRoom(thisPlayersRoomCode).getPlayers().size() == 0) {
 				gameManager.removeRoom(thisPlayersRoomCode);
 			}
 			sendingOperations.convertAndSend("/topic/rooms", gameManager.getRoomList());
+			sendingOperations.convertAndSend("/topic/users/" + thisPlayersRoomCode, gameManager.getRoom(thisPlayersRoomCode).getPlayerListByName());
 		}
 		// Action action = new Action(ActionType.DISCONNECT, username);
 		gameManager.removePlayer(username);
-		sendingOperations.convertAndSend("/topic/users", gameManager.getPlayerListByName());
+		sendingOperations.convertAndSend("/topic/users/homepage", gameManager.getPlayerListByName());
 
 	}
 

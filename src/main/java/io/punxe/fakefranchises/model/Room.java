@@ -2,6 +2,7 @@ package io.punxe.fakefranchises.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Room {
     private String code;
@@ -46,6 +47,17 @@ public class Room {
             }
         }
         
+    }
+
+    public String[] getPlayerListByName(){
+        Iterator<String> itr = players.keySet().iterator();
+        String[] playerList = new String[players.size()];
+        int iteration = 0;
+        while(itr.hasNext()){
+            playerList[iteration] = itr.next();
+            iteration++;
+        }
+        return playerList;
     }
 
 }

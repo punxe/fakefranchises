@@ -12,7 +12,7 @@ const INITIALIZE_SOCKET_URL = `${process.env.REACT_APP_API_ROOT_URL}/game`;
 let username;
 let stompClient;
 let dispatcher;
-let roomCode = -1;
+let roomCode = "homepage";
 
 export const ACTIONS = {
     CONNECT: 'connect',
@@ -38,7 +38,7 @@ function reducer(state, action) {
         case ACTIONS.USER_LIST_UPDATE:
             return { messages: state.messages, onlineUsers: action.payload.users, rooms: state.rooms };
         case ACTIONS.SEND_MESSAGE:
-            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({ sender: username, message: action.payload.message, roomCode: roomCode }));
+            stompClient.send(`/app/chat.sendMessage/${roomCode}`, {}, JSON.stringify({ sender: username, data: action.payload.data, roomCode: roomCode }));
             return state;
         case ACTIONS.RECEIVE_MESSAGE:
             return { messages: [...state.messages, action.payload.message], onlineUsers: state.onlineUsers, rooms: state.rooms };
@@ -46,11 +46,12 @@ function reducer(state, action) {
             roomCode = action.payload.code;
             subscribeToRoom(roomCode);
             stompClient.send("/app/rooms.createRoom", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
-            return state;
+            return { messages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms};
         case ACTIONS.JOIN_ROOM:
             roomCode = action.payload.code;
             subscribeToRoom(roomCode);
             stompClient.send("/app/rooms.joinRoom", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
+            return { messages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms};
         case ACTIONS.ROOM_LIST_UPDATE:
             return { messages: state.messages, onlineUsers: state.onlineUsers, rooms: action.payload.rooms };
         default:
@@ -59,25 +60,31 @@ function reducer(state, action) {
 }
 const subscribeToRoom = (code) => {
     stompClient.subscribe(`/topic/${code}`, onGameMessageReceived);
+    stompClient.subscribe(`/topic/chat/${code}`, onChatMessageReceived);
+    stompClient.subscribe(`/topic/users/${code}`, onUserMessageReceived);
 }
 const onGameMessageReceived = () => {
     //game logic
 }
 const onConnect = () => {
     stompClient.subscribe('/topic/public', onPublicMessageReceived);
-    stompClient.subscribe('/topic/users', onUserMessageReceived);
-    stompClient.subscribe('/topic/chat', onChatMessageReceived);
+    stompClient.subscribe(`/topic/users/${roomCode}`, onUserMessageReceived);
+    stompClient.subscribe(`/topic/chat/${roomCode}`, onChatMessageReceived);
     stompClient.subscribe('/topic/rooms', onRoomMessageReceived);
-    stompClient.send("/app/home.newUser", {}, JSON.stringify({ type: "CONNECT", sender: username }));
+    stompClient.send("/app/home.newUser", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
     stompClient.send("/app/rooms.getRooms", {}, '');
 };
 const onPublicMessageReceived = (payload) => {
     console.log("public message received");
 }
 const onUserMessageReceived = (payload) => {
-    console.log("user message received");
     const payloadParsed = JSON.parse(payload.body);
+    console.log("user message received aaa");
+    //if(payloadParsed.roomCode == roomCode){
+    console.log("user message received");
+    
     dispatcher({ type: ACTIONS.USER_LIST_UPDATE, payload: { users: payloadParsed } });
+    //}
 }
 const onRoomMessageReceived = (payload) => {
     console.log("room message received");
@@ -85,8 +92,12 @@ const onRoomMessageReceived = (payload) => {
     dispatcher({ type: ACTIONS.ROOM_LIST_UPDATE, payload: { rooms: payloadParsed } });
 }
 const onChatMessageReceived = (payload) => {
-    console.log("chat message received");
-    dispatcher({ type: ACTIONS.RECEIVE_MESSAGE, payload: { message: JSON.parse(payload.body) } });
+    const payloadParsed = JSON.parse(payload.body);
+        
+    if(payloadParsed.roomCode == roomCode){
+        console.log("chat message received in my room");
+        dispatcher({ type: ACTIONS.RECEIVE_MESSAGE, payload: { message: payloadParsed } });
+    }
 }
 const onError = (error) => {
     console.log("error connecting to websocket");
