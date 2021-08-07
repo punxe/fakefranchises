@@ -1,4 +1,4 @@
-package io.punxe.fakefranchises.model;
+package io.punxe.fakefranchises.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
+
+import io.punxe.fakefranchises.model.Player;
+import io.punxe.fakefranchises.model.Room;
 
 @Component
 public class GameManager {

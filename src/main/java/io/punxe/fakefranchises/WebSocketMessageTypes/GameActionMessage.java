@@ -1,13 +1,13 @@
-package io.punxe.fakefranchises.model;
+package io.punxe.fakefranchises.WebSocketMessageTypes;
 
-public class Action {
+public class GameActionMessage {
     private ActionType type;
     private String sender;
     private String roomCode;
     private String data;
     //private String[] arrayData;
     
-    public Action(ActionType type, String sender) {
+    public GameActionMessage(ActionType type, String sender) {
         this.type = type;
         this.sender = sender;
     }

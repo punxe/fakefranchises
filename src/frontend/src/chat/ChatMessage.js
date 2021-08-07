@@ -6,7 +6,7 @@ export const ChatMessage = ({message}) => {
     
     return(
         <div>
-            <h4>{message.sender}: {message.data}</h4>
+            <h4>{message.sender}: {message.messageText}</h4>
         </div> 
         
     )

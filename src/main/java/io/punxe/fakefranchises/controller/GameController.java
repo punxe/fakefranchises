@@ -7,23 +7,23 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
-import io.punxe.fakefranchises.model.Action;
-import io.punxe.fakefranchises.model.ActionType;
-import io.punxe.fakefranchises.model.GameManager;
+import io.punxe.fakefranchises.WebSocketMessageTypes.GameActionMessage;
+import io.punxe.fakefranchises.manager.GameManager;
+import io.punxe.fakefranchises.WebSocketMessageTypes.ActionType;
 
 @Controller
-public class ActionController {
+public class GameController {
 
     private GameManager gameManager;
     
     @Autowired
-    public ActionController(GameManager gameManager){
+    public GameController(GameManager gameManager){
         this.gameManager = gameManager;
     }
 
     @MessageMapping("/game.action")
     @SendTo("/topic/public")
-    public Action sendAction(@Payload Action action){
+    public GameActionMessage sendAction(@Payload GameActionMessage action){
 
         return action;
     }

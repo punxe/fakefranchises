@@ -36,24 +36,24 @@ function reducer(state, action) {
             stompClient.connect({}, onConnect, onError);
             return state;
         case ACTIONS.USER_LIST_UPDATE:
-            return { messages: state.messages, onlineUsers: action.payload.users, rooms: state.rooms };
+            return { chatMessages: state.chatMessages, onlineUsers: action.payload.users, rooms: state.rooms };
         case ACTIONS.SEND_MESSAGE:
-            stompClient.send(`/app/chat.sendMessage/${roomCode}`, {}, JSON.stringify({ sender: username, data: action.payload.data, roomCode: roomCode }));
+            stompClient.send(`/app/chat.sendMessage/${roomCode}`, {}, JSON.stringify({ roomCode: roomCode, sender: username, messageText: action.payload.messageText }));
             return state;
         case ACTIONS.RECEIVE_MESSAGE:
-            return { messages: [...state.messages, action.payload.message], onlineUsers: state.onlineUsers, rooms: state.rooms };
+            return { chatMessages: [...state.chatMessages, action.payload.chatMessage], onlineUsers: state.onlineUsers, rooms: state.rooms };
         case ACTIONS.CREATE_ROOM:
             roomCode = action.payload.code;
             subscribeToRoom(roomCode);
-            stompClient.send("/app/rooms.createRoom", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
-            return { messages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms};
+            stompClient.send("/app/rooms.createRoom", {}, JSON.stringify({ sender: username, roomCode: roomCode }));
+            return { chatMessages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms};
         case ACTIONS.JOIN_ROOM:
             roomCode = action.payload.code;
             subscribeToRoom(roomCode);
             stompClient.send("/app/rooms.joinRoom", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
-            return { messages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms};
+            return { chatMessages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms};
         case ACTIONS.ROOM_LIST_UPDATE:
-            return { messages: state.messages, onlineUsers: state.onlineUsers, rooms: action.payload.rooms };
+            return { chatMessages: state.chatMessages, onlineUsers: state.onlineUsers, rooms: action.payload.rooms };
         default:
             return state;
     }
@@ -71,7 +71,7 @@ const onConnect = () => {
     stompClient.subscribe(`/topic/users/${roomCode}`, onUserMessageReceived);
     stompClient.subscribe(`/topic/chat/${roomCode}`, onChatMessageReceived);
     stompClient.subscribe('/topic/rooms', onRoomMessageReceived);
-    stompClient.send("/app/home.newUser", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
+    stompClient.send("/app/home.newUser", {}, JSON.stringify({ sender: username }));
     stompClient.send("/app/rooms.getRooms", {}, '');
 };
 const onPublicMessageReceived = (payload) => {
@@ -80,11 +80,11 @@ const onPublicMessageReceived = (payload) => {
 const onUserMessageReceived = (payload) => {
     const payloadParsed = JSON.parse(payload.body);
     console.log("user message received aaa");
-    //if(payloadParsed.roomCode == roomCode){
-    console.log("user message received");
+    if(payloadParsed.roomCode == roomCode){
+    console.log("user message received bbb");
     
-    dispatcher({ type: ACTIONS.USER_LIST_UPDATE, payload: { users: payloadParsed } });
-    //}
+    dispatcher({ type: ACTIONS.USER_LIST_UPDATE, payload: { users: payloadParsed.userList } });
+    }
 }
 const onRoomMessageReceived = (payload) => {
     console.log("room message received");
@@ -96,7 +96,7 @@ const onChatMessageReceived = (payload) => {
         
     if(payloadParsed.roomCode == roomCode){
         console.log("chat message received in my room");
-        dispatcher({ type: ACTIONS.RECEIVE_MESSAGE, payload: { message: payloadParsed } });
+        dispatcher({ type: ACTIONS.RECEIVE_MESSAGE, payload: { chatMessage: payloadParsed } });
     }
 }
 const onError = (error) => {
@@ -106,7 +106,7 @@ const onError = (error) => {
 
 export function WebSocketProvider({ children }) {
 
-    const [state, dispatch] = useReducer(reducer, { messages: [], onlineUsers: [], rooms: [] });
+    const [state, dispatch] = useReducer(reducer, { chatMessages: [], onlineUsers: [], rooms: [] });
     dispatcher = dispatch;
 
     return (

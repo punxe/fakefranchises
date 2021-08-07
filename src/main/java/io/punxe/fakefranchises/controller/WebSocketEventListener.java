@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import io.punxe.fakefranchises.model.Action;
-import io.punxe.fakefranchises.model.ActionType;
-import io.punxe.fakefranchises.model.GameManager;
+import io.punxe.fakefranchises.WebSocketMessageTypes.UserListMessage;
+import io.punxe.fakefranchises.manager.GameManager;
+import io.punxe.fakefranchises.model.Room;
 
 @Component
 public class WebSocketEventListener {
@@ -33,16 +33,16 @@ public class WebSocketEventListener {
 		
 
 		if (!thisPlayersRoomCode.equals("homepage")) {
-			gameManager.getRoom(thisPlayersRoomCode).removePlayer(username);
-			if (gameManager.getRoom(thisPlayersRoomCode).getPlayers().size() == 0) {
+			Room room = gameManager.getRoom(thisPlayersRoomCode);
+			room.removePlayer(username);
+			if (room.getPlayers().size() == 0) {
 				gameManager.removeRoom(thisPlayersRoomCode);
 			}
 			sendingOperations.convertAndSend("/topic/rooms", gameManager.getRoomList());
-			sendingOperations.convertAndSend("/topic/users/" + thisPlayersRoomCode, gameManager.getRoom(thisPlayersRoomCode).getPlayerListByName());
+			sendingOperations.convertAndSend("/topic/users/" + thisPlayersRoomCode, new UserListMessage(thisPlayersRoomCode, room.getPlayerListByName()));
 		}
-		// Action action = new Action(ActionType.DISCONNECT, username);
 		gameManager.removePlayer(username);
-		sendingOperations.convertAndSend("/topic/users/homepage", gameManager.getPlayerListByName());
+		sendingOperations.convertAndSend("/topic/users/homepage", new UserListMessage("homepage", gameManager.getPlayerListByName()));
 
 	}
 

@@ -7,9 +7,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import io.punxe.fakefranchises.model.Action;
-import io.punxe.fakefranchises.model.ActionType;
-import io.punxe.fakefranchises.model.GameManager;
+import io.punxe.fakefranchises.WebSocketMessageTypes.ChatMessage;
+import io.punxe.fakefranchises.manager.GameManager;
 
 @Controller
 
@@ -24,7 +23,7 @@ public class ChatController {
 
     @MessageMapping("/chat.sendMessage/{room}")
     @SendTo("/topic/chat/{room}")
-    public Action manageChatMessage(@DestinationVariable String room, @Payload Action action){      
-        return action;
+    public ChatMessage manageChatMessage(@DestinationVariable String room, @Payload ChatMessage chatMessage){      
+        return chatMessage;
     }
 }
