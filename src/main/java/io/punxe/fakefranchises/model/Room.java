@@ -13,7 +13,12 @@ public class Room {
     public Room(String code, String host){
         this.code = code;
         this.host = host;
-        gameStarted = false;
+        this.gameStarted = false;
+    }
+
+    public void startGame(){
+        //initialize game state with current players
+        this.gameStarted = true;
     }
 
     public boolean isGameStarted() {
@@ -55,6 +60,17 @@ public class Room {
         int iteration = 0;
         while(itr.hasNext()){
             playerList[iteration] = itr.next();
+            iteration++;
+        }
+        return playerList;
+    }
+
+    public Player[] getPlayerListByPlayer(){
+        Iterator<String> itr = players.keySet().iterator();
+        Player[] playerList = new Player[players.size()];
+        int iteration = 0;
+        while(itr.hasNext()){
+            playerList[iteration] = players.get(itr.next());
             iteration++;
         }
         return playerList;
