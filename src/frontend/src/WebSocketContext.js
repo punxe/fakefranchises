@@ -24,7 +24,12 @@ export const ACTIONS = {
     ROOM_LIST_UPDATE: 'roomListUpdate',
     READY_UP: 'readyUp',
     ROLL_DICE: 'rollDice',
-    GAME_STATE_UPDATE: 'gameStateUpdate'
+    GAME_STATE_UPDATE: 'gameStateUpdate',
+    GAME_MOVE: 'gameMove',
+    CLAIM: 'claim',
+    NO_CLAIM: 'noClaim',
+    CHALLENGE: 'challenge',
+    NO_CHALLENGE: 'noChallenge'
 }
 
 export function useWebSocket() {
@@ -54,9 +59,9 @@ function reducer(state, action) {
             roomCode = action.payload.code;
             subscribeToRoom(roomCode);
             stompClient.send("/app/rooms.joinRoom", {}, JSON.stringify({ type: "CONNECT", sender: username, roomCode: roomCode }));
-            return { username: state.username, chatMessages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms, gameState: state.gameState};
+            return { username: state.username, chatMessages: [], onlineUsers: state.onlineUsers, rooms: action.payload.rooms, gameState: state.gameState };
         case ACTIONS.ROOM_LIST_UPDATE:
-            return { username: state.username, chatMessages: state.chatMessages, onlineUsers: state.onlineUsers, rooms: action.payload.rooms, gameState: state.gameState};
+            return { username: state.username, chatMessages: state.chatMessages, onlineUsers: state.onlineUsers, rooms: action.payload.rooms, gameState: state.gameState };
         case ACTIONS.READY_UP:
             stompClient.send("/app/lobby.readyUp/" + roomCode, {}, JSON.stringify({ sender: username }));
             return state;
@@ -64,7 +69,19 @@ function reducer(state, action) {
             stompClient.send("/app/game.rollDice/" + roomCode, {}, JSON.stringify({ sender: username }));
             return state;
         case ACTIONS.GAME_STATE_UPDATE:
-            return { username: state.username, chatMessages: state.chatMessages, onlineUsers: state.onlineUsers, rooms: state.rooms, gameState: action.payload.gameState};
+            return { username: state.username, chatMessages: state.chatMessages, onlineUsers: state.onlineUsers, rooms: state.rooms, gameState: action.payload.gameState };
+        case ACTIONS.CLAIM:
+            stompClient.send("/app/game.claim/" + roomCode, {}, JSON.stringify({ sender: username }));
+            return state;
+        case ACTIONS.NO_CLAIM:
+            stompClient.send("/app/game.noClaim/" + roomCode, {}, JSON.stringify({ sender: username }));
+            return state;
+        case ACTIONS.CHALLENGE:
+            stompClient.send("/app/game.challenge/" + roomCode, {}, JSON.stringify({ sender: action.payload.challenged }));
+            return state;
+        case ACTIONS.NO_CHALLENGE:
+            stompClient.send("/app/game.noChallenge/" + roomCode, {}, JSON.stringify({ sender: action.payload.challenged }));
+            return state;
         default:
             return state;
     }
@@ -74,6 +91,7 @@ const subscribeToRoom = (code) => {
     stompClient.subscribe(`/topic/chat/${code}`, onChatMessageReceived);
     stompClient.subscribe(`/topic/users/${code}`, onUserMessageReceived);
     stompClient.subscribe(`/topic/game/${roomCode}`, onGameMessageReceived);
+    stompClient.subscribe(`/topic/game/move/${roomCode}`, onGameMoveMessageReceived);
 }
 const onLobbyMessageReceived = (payload) => {
     //lobby logic, pregame. readying up
@@ -89,10 +107,14 @@ const onLobbyMessageReceived = (payload) => {
             }
         }
     }
-    if(allReady){
-        
+    if (allReady) {
+
         stompClient.send("/app/lobby.startGame/" + roomCode, {}, JSON.stringify({ sender: username }));
     }
+}
+const onGameMoveMessageReceived = (payload) => {
+    const payloadParsed = JSON.parse(payload.body);
+    dispatcher({ type: ACTIONS.GAME_MOVE, payload: { gameState: payloadParsed } });
 }
 const onGameMessageReceived = (payload) => {
     const payloadParsed = JSON.parse(payload.body);

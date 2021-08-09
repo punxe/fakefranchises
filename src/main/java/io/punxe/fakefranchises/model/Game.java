@@ -1,19 +1,36 @@
 package io.punxe.fakefranchises.model;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Game {
+
+    private int claimAmount;
+
+    private int[][] challengeResults;
+
+    private int prevTurn;
     private int whoseTurn;
     private String[] players;
     private int playerAmount;
+    private String[] lastMove;
+    private HashMap<String, String> playerClaims = new HashMap<String, String>();
     private HashMap<String, Integer> playerCoins = new HashMap<String, Integer>();
     private HashMap<String, Integer> playerProperties = new HashMap<String, Integer>();
     private HashMap<String, Integer> playerLocations = new HashMap<String, Integer>();
     public Game(HashMap<String, Player> players){
+        
+        //[1, 1] = did challenge, challenge successful
+        //[1, 2] = did challenge, challenge unsuccessful
+        //[2] = did not challenge
+        this.claimAmount = 0;
+        this.lastMove = new String[] {"null"};
         this.whoseTurn = 0;
+        this.prevTurn = 0;
         this.playerAmount = players.size();
+        this.challengeResults = new int[this.playerAmount][2];
         this.players = new String[playerAmount];
         Iterator<String> itr = players.keySet().iterator();
         int iteration = 0;
@@ -25,6 +42,7 @@ public class Game {
             this.playerCoins.put(this.players[i], 3);
             setRandomProperty(this.players[i]);
             this.playerLocations.put(this.players[i], 0);
+            this.playerClaims.put(this.players[i], "null");
         }
     }
     public void setRandomProperty(String player){
@@ -83,9 +101,123 @@ public class Game {
     public void setPlayerLocations(HashMap<String, Integer> playerLocations) {
         this.playerLocations = playerLocations;
     }
-    /*public void movePlayer(String player, int steps){
+    public void movePlayer(String player, int steps){
+        this.prevTurn = this.whoseTurn;
         int currentLoc = playerLocations.get(player);
+        int newLoc = (currentLoc + steps)%(playerAmount*2);
+        playerLocations.put(player, newLoc);
+        setLastMove(new String[]{player, Integer.toString(steps), Integer.toString(currentLoc), Integer.toString(newLoc)});
+    }
+    public void refreshPlayerClaims(){
+        for(int i = 0; i < playerAmount; i++){
+            this.playerClaims.put(this.players[i], "null");
+        }
+    }
+    public int getPlayerLocation(String player){
+        return playerLocations.get(player);
+    }
+    public void nextPlayer(){
+        whoseTurn++;
+        if(whoseTurn == playerAmount){
+            whoseTurn = 0;
+        }
+        resetLastMove();
+    }
+    public HashMap<String, String> getPlayerClaims() {
+        return playerClaims;
+    }
+    public void setPlayerClaims(HashMap<String, String> playerClaims) {
+        this.playerClaims = playerClaims;
+    }
+    public String[] getLastMove() {
+        return lastMove;
+    }
+    public void setLastMove(String[] lastMove) {
+        this.lastMove = lastMove;
+    }
+    public void setPlayerClaim(String player, String claim){
+        if(claim.equals("true")){
+            claimAmount++;
+        }
+        playerClaims.put(player, claim);
+    }
+    public void challenge(String player){
+        claimAmount--;
+        int playerLoc = getIndexOfPlayer(player);
+        if(playerProperties.get(player) == playerLocations.get(players[whoseTurn])){
+            transaction(players[whoseTurn], player);
+            transaction(players[whoseTurn], player);
+            challengeResults[playerLoc][0] = 1;
+            challengeResults[playerLoc][1] = 2;
+            setRandomProperty(player);
+        }else{
+            transaction(player, players[whoseTurn]);
+            transaction(player, players[whoseTurn]);
+            challengeResults[playerLoc][0] = 1;
+            challengeResults[playerLoc][1] = 1;
+        }
 
-    }*/
+        checkNoMoreClaims();
+    }
+    public void noChallenge(String player){
+        claimAmount--;
+        transaction(players[whoseTurn], player);
+        
+        challengeResults[getIndexOfPlayer(player)][0] = 2;
+        checkNoMoreClaims();
+    }
+    public void checkNoMoreClaims(){
+        if(claimAmount == 0){
+            nextPlayer();
+        }
+    }
+    public void checkNoClaimsAtAll(){
+        int nullAmount = 0;
+        for (int i = 0; i < players.length; i++) {
+            if (playerClaims.get(players[i]) == "null") {
+                nullAmount++;
+            }
+        }
+        if (nullAmount == 1) {
+            checkNoMoreClaims();
+        }
+    }
+    public int getIndexOfPlayer(String player){
+        for(int i = 0; i < players.length; i++){
+            if(players[i].equals(player)){
+                return i;
+            }
+        }
+        return -1;
+    }
+    public int getClaimAmount() {
+        return claimAmount;
+    }
+    public void setClaimAmount(int claimAmount) {
+        this.claimAmount = claimAmount;
+    }
+    public void transaction(String from, String to){
+        playerCoins.put(from, playerCoins.get(from) - 1);
+        playerCoins.put(to, playerCoins.get(to) + 1);
+    }
+    public void resetChallengeResults(){
+        challengeResults = new int[playerAmount][2];
+    }
+    public void resetLastMove(){
+        lastMove = new String[]{"null"};
+    }
+    public int[][] getChallengeResults() {
+        return challengeResults;
+    }
+    public void setChallengeResults(int[][] challengeResults) {
+        this.challengeResults = challengeResults;
+    }
+    public int getPrevTurn() {
+        return prevTurn;
+    }
+    public void setPrevTurn(int prevTurn) {
+        this.prevTurn = prevTurn;
+    }
+    
 }
 

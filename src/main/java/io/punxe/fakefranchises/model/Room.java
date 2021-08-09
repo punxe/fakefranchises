@@ -86,7 +86,10 @@ public class Room {
         this.game = game;
     }
     
-    /*public void rollDice(String player){
-        game.movePlayer(player, (int)(Math.random()*6));
-    }*/
+    public int rollDice(String player){
+        int x = 1 + (int)(Math.random()*6);
+        game.movePlayer(player, x);
+        
+        return x;
+    }
 }
