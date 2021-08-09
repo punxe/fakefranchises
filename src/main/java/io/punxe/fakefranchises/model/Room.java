@@ -9,6 +9,7 @@ public class Room {
     private String host;
     private boolean gameStarted;
     private HashMap<String, Player> players = new HashMap<String, Player>();
+    private Game game;
 
     public Room(String code, String host){
         this.code = code;
@@ -19,6 +20,7 @@ public class Room {
     public void startGame(){
         //initialize game state with current players
         this.gameStarted = true;
+        game = new Game(players);
     }
 
     public boolean isGameStarted() {
@@ -76,4 +78,15 @@ public class Room {
         return playerList;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+    
+    /*public void rollDice(String player){
+        game.movePlayer(player, (int)(Math.random()*6));
+    }*/
 }

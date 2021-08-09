@@ -13,6 +13,7 @@ import io.punxe.fakefranchises.WebSocketMessageTypes.GameActionMessage;
 import io.punxe.fakefranchises.WebSocketMessageTypes.PlayerDataMessage;
 import io.punxe.fakefranchises.WebSocketMessageTypes.UserMessage;
 import io.punxe.fakefranchises.manager.GameManager;
+import io.punxe.fakefranchises.model.Game;
 import io.punxe.fakefranchises.model.Player;
 import io.punxe.fakefranchises.WebSocketMessageTypes.ActionType;
 
@@ -45,6 +46,13 @@ public class GameController {
             
             gameManager.getRoom(room).startGame();
             sendingOperations.convertAndSend("/topic/rooms", gameManager.getRoomList());
+            sendingOperations.convertAndSend("/topic/game/" + room, gameManager.getRoom(room).getGame());
         }
     }
+    @MessageMapping("/game.rollDice/{room}")
+    public void rollDice(@DestinationVariable String room, @Payload UserMessage userMessage){
+        //gameManager.getRoom(room).rollDice(userMessage.getSender());
+        sendingOperations.convertAndSend("/topic/game/" + room, gameManager.getRoom(room).getGame());
+    }
+
 }
