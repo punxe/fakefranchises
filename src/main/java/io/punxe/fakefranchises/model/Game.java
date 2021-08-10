@@ -12,6 +12,7 @@ public class Game {
     private int[][] challengeResults;
 
     private int prevTurn;
+    private String winner;
     private int whoseTurn;
     private String[] players;
     private int playerAmount;
@@ -20,6 +21,7 @@ public class Game {
     private HashMap<String, Integer> playerCoins = new HashMap<String, Integer>();
     private HashMap<String, Integer> playerProperties = new HashMap<String, Integer>();
     private HashMap<String, Integer> playerLocations = new HashMap<String, Integer>();
+    private HashMap<String, String> playerBankrupt = new HashMap<String, String>();
     public Game(HashMap<String, Player> players){
         
         //[1, 1] = did challenge, challenge successful
@@ -29,6 +31,7 @@ public class Game {
         this.lastMove = new String[] {"null"};
         this.whoseTurn = 0;
         this.prevTurn = 0;
+        this.winner = "ThereIsNoWinnerYet00112233445566778899";
         this.playerAmount = players.size();
         this.challengeResults = new int[this.playerAmount][2];
         this.players = new String[playerAmount];
@@ -43,6 +46,7 @@ public class Game {
             setRandomProperty(this.players[i]);
             this.playerLocations.put(this.players[i], 0);
             this.playerClaims.put(this.players[i], "null");
+            this.playerBankrupt.put(this.players[i], "false");
         }
     }
     public void setRandomProperty(String player){
@@ -110,17 +114,29 @@ public class Game {
     }
     public void refreshPlayerClaims(){
         for(int i = 0; i < playerAmount; i++){
-            this.playerClaims.put(this.players[i], "null");
+            if(this.playerBankrupt.get(players[i]).equals("false")){
+                this.playerClaims.put(this.players[i], "null");
+            }else{
+                this.playerClaims.put(this.players[i], "false");
+            }
         }
     }
     public int getPlayerLocation(String player){
         return playerLocations.get(player);
     }
     public void nextPlayer(){
+        for(int i = 0; i < playerAmount; i++){
+            if(playerCoins.get(players[i]) < 0 && playerBankrupt.get(players[i]).equals("false")){
+                bankrupt(players[i]);
+            }
+        }
+        do{
         whoseTurn++;
         if(whoseTurn == playerAmount){
             whoseTurn = 0;
         }
+        }while(playerBankrupt.get(players[whoseTurn]).equals("true"));
+        
         resetLastMove();
     }
     public HashMap<String, String> getPlayerClaims() {
@@ -217,6 +233,36 @@ public class Game {
     }
     public void setPrevTurn(int prevTurn) {
         this.prevTurn = prevTurn;
+    }
+    public void bankrupt(String player){
+        playerBankrupt.put(player, "true");
+        playerProperties.put(player, -1);
+        int bankruptPlayerCount = 0;
+        String nonBankruptPlayer = "ThereIsNoWinnerYet00112233445566778899";
+        for(int i = 0; i < playerAmount; i++){
+            if(playerBankrupt.get(players[i]).equals("true")){
+                bankruptPlayerCount++;
+            }else{
+                nonBankruptPlayer = players[i];
+            }
+        }
+        if(bankruptPlayerCount == playerAmount - 1){
+            winner = nonBankruptPlayer;
+        }
+    }
+    public HashMap<String, String> getPlayerBankrupt() {
+        return playerBankrupt;
+    }
+    public void setPlayerBankrupt(HashMap<String, String> playerBankrupt) {
+        this.playerBankrupt = playerBankrupt;
+       
+        
+    }
+    public String getWinner() {
+        return winner;
+    }
+    public void setWinner(String winner) {
+        this.winner = winner;
     }
     
 }
