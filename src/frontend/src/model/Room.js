@@ -3,6 +3,7 @@ import { React } from 'react';
 import { useWebSocket, ACTIONS } from '../WebSocketContext';
 import { useHistory } from "react-router-dom";
 
+import "./Room.css";
 
 export const Room = ({room}) => {
 
@@ -17,9 +18,13 @@ export const Room = ({room}) => {
     }
 
     return(
-        <div>
-            <h4>Code: {room.code} || Host: {room.host} || Player Count: {Object.keys(room.players).length} || Game In Progress: {room.gameStarted ? 'Yes' : 'No'}</h4>
-            {room.gameStarted ? null : <button onClick={joinRoom}>Join</button>}
+        <div className="Room">
+            <h4 className="roomCodeText">Code: {room.code}</h4> 
+            <h4>Host: {room.host}</h4>
+            <h4>Player Count: {Object.keys(room.players).length} </h4>
+            
+            {room.gameStarted ?  <h4>Game In Progress</h4>: <button onClick={joinRoom}>Join</button>}
+           
         </div> 
         
     )

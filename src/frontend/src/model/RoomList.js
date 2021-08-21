@@ -5,7 +5,7 @@ import { Room } from './Room';
 import { useWebSocket, ACTIONS } from '../WebSocketContext';
 import { useHistory } from "react-router-dom";
 
-
+import "./RoomList.css";
 
 export const RoomList = () => {
 
@@ -31,17 +31,20 @@ export const RoomList = () => {
     }
 
     return (
-        <div>
+        <div className="RoomList">
             <div>
                 <h3>Rooms</h3>
             </div>
+            <div>
+                <button onClick={createRoom}>Create Room</button>
+            </div>
+            <div className="roomArea">
             {
                 webSocket.state.rooms.map(
                     r => <Room key={r.code} room={r} />)
             }
-            <div>
-                <button onClick={createRoom}>Create Room</button>
             </div>
+            
 
         </div>
 

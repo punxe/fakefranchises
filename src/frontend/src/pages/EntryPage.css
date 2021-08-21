@@ -1,0 +1,17 @@
+.EntryPage{
+    display: grid;
+    grid-template-columns: 96vw;
+    grid-template-rows: 10vh 10vh 76vh;
+    height: 96vh;
+    width: 96vw;
+    
+    padding-left:2vw;
+    padding-right: 2vw;
+    gap: 1vh;
+}
+.yuuugeParagraph{
+    border: 1px solid black;
+    overflow-y: scroll;
+    text-align: left;
+    padding: 1vh;
+}

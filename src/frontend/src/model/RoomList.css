@@ -1,0 +1,14 @@
+.RoomList{
+    display: grid;
+    grid-template-rows: 1fr 1fr 8fr;
+    border: 1px solid black;
+    height: 100%;
+}
+.roomArea{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-auto-rows: 20vh;
+    overflow-y: scroll;
+    padding: 1vh;
+    gap: 1vh;
+}
