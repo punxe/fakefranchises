@@ -1,0 +1,6 @@
+.OnlineUserList{
+    display: grid;
+    grid-template-rows: 1fr 9fr;
+    border: 1px solid black;
+    height: 100%;
+}

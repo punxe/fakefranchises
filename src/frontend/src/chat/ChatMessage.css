@@ -1,0 +1,13 @@
+.ChatMessage{
+    display: flex;
+    align-items: center;
+    text-align: start;
+    margin: 10px;
+    
+    padding-left: 10px;
+    border: 1px solid black;
+    background: lightgray;
+    border-radius: 20px;
+    height: 30px;
+    
+}

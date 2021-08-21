@@ -12,7 +12,6 @@ export const ProfileCard = () => {
 
     return (
         <div>
-            
                 <h3>Your Name: {webSocket.state.username}</h3>
         </div>
     )

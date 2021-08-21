@@ -1,0 +1,10 @@
+.ChatBox{
+    display: grid;
+    grid-template-rows: 1fr 8fr 1fr;
+    border: 1px solid black;
+    height: 100%;
+    
+}
+.chatMessageArea{
+    overflow-y: scroll;
+}
