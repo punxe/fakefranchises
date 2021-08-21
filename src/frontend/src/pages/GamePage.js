@@ -22,7 +22,7 @@ export const GamePage = () => {
           <div className="name">
           <ProfileCard />
           </div>
-          {ready == false? <button onClick={readyUp}><b>Ready Up</b> (I'm a button! Press Me!)</button> : ( webSocket.state.gameState == null?
+          {ready === false? <button onClick={readyUp}><b>Ready Up</b> (I'm a button! Press Me!)</button> : ( webSocket.state.gameState == null?
             <div className="readyUp">
             <h2>Waiting for other players to ready up</h2>
             </div>

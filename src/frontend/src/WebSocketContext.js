@@ -98,11 +98,11 @@ const onLobbyMessageReceived = (payload) => {
     const payloadParsed = JSON.parse(payload.body);
     let allReady = true;
     const playerArray = payloadParsed.playerData;
-    if (playerArray.length == 1) {
+    if (playerArray.length === 1) {
         allReady = false;
     } else {
         for (let i = 0; i < playerArray.length; i++) {
-            if (playerArray[i].ready == false) {
+            if (playerArray[i].ready === false) {
                 allReady = false;
             }
         }
@@ -135,7 +135,7 @@ const onPublicMessageReceived = (payload) => {
 const onUserMessageReceived = (payload) => {
     const payloadParsed = JSON.parse(payload.body);
     console.log("user message received aaa");
-    if (payloadParsed.roomCode == roomCode) {
+    if (payloadParsed.roomCode === roomCode) {
         console.log("user message received bbb");
 
         dispatcher({ type: ACTIONS.USER_LIST_UPDATE, payload: { users: payloadParsed.userList } });
@@ -149,7 +149,7 @@ const onRoomMessageReceived = (payload) => {
 const onChatMessageReceived = (payload) => {
     const payloadParsed = JSON.parse(payload.body);
 
-    if (payloadParsed.roomCode == roomCode) {
+    if (payloadParsed.roomCode === roomCode) {
         console.log("chat message received in my room");
         dispatcher({ type: ACTIONS.RECEIVE_MESSAGE, payload: { chatMessage: payloadParsed } });
     }

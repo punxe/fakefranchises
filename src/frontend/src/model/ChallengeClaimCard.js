@@ -15,10 +15,10 @@ export const ChallengeClaimCard = ({ i }) => {
     }
     return (
         <div className="ChallengeClaimCard">
-            {webSocket.state.gameState.challengeResults[i][0] == 0 ?
+            {webSocket.state.gameState.challengeResults[i][0] === 0 ?
                 <div>
                     <h3>{webSocket.state.gameState.players[i]} claims that they have a franchise on location {webSocket.state.gameState.playerLocations[webSocket.state.gameState.players[webSocket.state.gameState.whoseTurn]]}</h3>
-                    {webSocket.state.username == webSocket.state.gameState.players[webSocket.state.gameState.whoseTurn] ?
+                    {webSocket.state.username === webSocket.state.gameState.players[webSocket.state.gameState.whoseTurn] ?
                         <div>
                             <button onClick={challenge}>Challenge Claim</button>
                             <button onClick={noChallenge}>Let it be</button>
@@ -28,10 +28,10 @@ export const ChallengeClaimCard = ({ i }) => {
                     }
                 </div>
                 :
-                webSocket.state.gameState.challengeResults[i][0] == 2 ?
+                webSocket.state.gameState.challengeResults[i][0] === 2 ?
                     <h3>{webSocket.state.gameState.players[webSocket.state.gameState.prevTurn]} did not challenge {webSocket.state.gameState.players[i]}'s claim</h3>
                     :
-                    webSocket.state.gameState.challengeResults[i][1] == 1 ?
+                    webSocket.state.gameState.challengeResults[i][1] === 1 ?
                         <h3>{webSocket.state.gameState.players[webSocket.state.gameState.prevTurn]} successfully challenged {webSocket.state.gameState.players[i]}'s claim</h3>
                         :
                         <h3>{webSocket.state.gameState.players[webSocket.state.gameState.prevTurn]} unsuccessfully challenged {webSocket.state.gameState.players[i]}'s claim</h3>

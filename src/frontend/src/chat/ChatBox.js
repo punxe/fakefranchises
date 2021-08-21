@@ -29,7 +29,7 @@ export const ChatBox = () => {
 
                 {
                     webSocket.state.chatMessages.map(
-                        m => <ChatMessage key={`${m.sender} ${m.messageText}`} message={m} />)
+                        m => <ChatMessage key={`${m.sender} ${m.messageText} ${Date().toLocaleString()}`} message={m} />)
                 }
 
             </div>

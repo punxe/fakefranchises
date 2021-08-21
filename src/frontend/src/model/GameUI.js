@@ -23,13 +23,13 @@ export const GameUI = () => {
         claim(false);
     }
     const resetClaimDecisionMade = () => {
-        if (claimDecisionMade == true) {
+        if (claimDecisionMade === true) {
             setClaimDecisionMade(false);
         }
     }
     const claim = (decision) => {
         setClaimDecisionMade(true);
-        if (decision == true) {
+        if (decision === true) {
             webSocket.dispatch({ type: ACTIONS.CLAIM });
         } else {
             webSocket.dispatch({ type: ACTIONS.NO_CLAIM });
@@ -38,11 +38,11 @@ export const GameUI = () => {
     const checkAllClaimed = () => {
         let nullAmount = 0;
         for (let i = 0; i < webSocket.state.gameState.players.length; i++) {
-            if (webSocket.state.gameState.playerClaims[webSocket.state.gameState.players[i]] == "null") {
+            if (webSocket.state.gameState.playerClaims[webSocket.state.gameState.players[i]] === "null") {
                 nullAmount++;
             }
         }
-        if (nullAmount == 1) {
+        if (nullAmount === 1) {
             return true;
         } else {
             return false;
@@ -54,7 +54,7 @@ export const GameUI = () => {
         let ret = [];
         for (let i = 0; i < webSocket.state.gameState.players.length; i++) {
 
-            if (webSocket.state.gameState.playerClaims[webSocket.state.gameState.players[i]] == "true") {
+            if (webSocket.state.gameState.playerClaims[webSocket.state.gameState.players[i]] === "true") {
                 ret.push(
                     <ChallengeClaimCard i={i} key='i' />
                 );
@@ -68,7 +68,7 @@ export const GameUI = () => {
     const whoseTurn = webSocket.state.gameState.players[webSocket.state.gameState.whoseTurn];
 
     let whatToReturn = [];
-    if (webSocket.state.gameState.winner != 'ThereIsNoWinnerYet00112233445566778899') {
+    if (webSocket.state.gameState.winner !== 'ThereIsNoWinnerYet00112233445566778899') {
         whatToReturn.push(
             <div className="winMessage">
                 <h1>The Winner Is {webSocket.state.gameState.winner}</h1>
@@ -87,7 +87,7 @@ export const GameUI = () => {
                 <div className="statsArea">
                     {
                         webSocket.state.gameState.players.map(p =>
-                            webSocket.state.gameState.playerBankrupt[p] == "false" ?
+                            webSocket.state.gameState.playerBankrupt[p] === "false" ?
                                 <h4>{p}: Coins: {webSocket.state.gameState.playerCoins[p]} Location: {webSocket.state.gameState.playerLocations[p]}</h4>
                                 :
                                 <h4>{p}: Bankrupt </h4>
@@ -96,7 +96,7 @@ export const GameUI = () => {
                 </div>
             </div>
         );
-        if (webSocket.state.gameState.playerBankrupt[webSocket.state.username] == "false") {
+        if (webSocket.state.gameState.playerBankrupt[webSocket.state.username] === "false") {
             whatToReturn.push(
                 <div className="locationText">
                     <h2>Your Franchise Location: &gt;&gt; {webSocket.state.gameState.playerProperties[webSocket.state.username]} &lt;&lt; </h2>
@@ -109,8 +109,8 @@ export const GameUI = () => {
                 </div>
             );
         }
-        if (webSocket.state.gameState.lastMove.length == 1) {
-            if(webSocket.state.username == whoseTurn){
+        if (webSocket.state.gameState.lastMove.length === 1) {
+            if(webSocket.state.username === whoseTurn){
                 whatToReturn.push(
                     <div className="roll">
                         <h1>It's Your Turn! Roll the Dice!</h1>
@@ -141,11 +141,11 @@ export const GameUI = () => {
                     <h2>{webSocket.state.gameState.lastMove[0]} rolled a {webSocket.state.gameState.lastMove[1]} and moved from location {webSocket.state.gameState.lastMove[2]} to location {webSocket.state.gameState.lastMove[3]}</h2>
                 </div>
             );
-            if (webSocket.state.gameState.lastMove[0] == webSocket.state.username || claimDecisionMade == true || webSocket.state.gameState.playerBankrupt[webSocket.state.username] == "true") {
-                if (checkAllClaimed() == true) {
+            if (webSocket.state.gameState.lastMove[0] === webSocket.state.username || claimDecisionMade === true || webSocket.state.gameState.playerBankrupt[webSocket.state.username] === "true") {
+                if (checkAllClaimed() === true) {
                     whatToReturn.push(
                         <div className="franchiseLogic">
-                            {(webSocket.state.gameState.lastMove[0] == webSocket.state.username) ?
+                            {(webSocket.state.gameState.lastMove[0] === webSocket.state.username) ?
                                 <h2>You need to resolve these claims:</h2>
                                 :
                                 <h2>Waiting for {whoseTurn} to challenge claims</h2>
