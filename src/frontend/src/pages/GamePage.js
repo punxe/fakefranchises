@@ -7,6 +7,8 @@ import { OnlineUserList } from '../model/OnlineUserList';
 import {GameUI} from '../model/GameUI';
 import { ProfileCard } from '../model/ProfileCard';
 
+import "./GamePage.css";
+
 export const GamePage = () => {
   const webSocket = useWebSocket();
   const [ready, setReady] = useState(false);
@@ -17,15 +19,25 @@ export const GamePage = () => {
   }
     return (
         <div className="GamePage">
+          <div className="name">
           <ProfileCard />
-          {ready == false? <button onClick={readyUp}>Ready Up</button> : ( webSocket.state.gameState == null?
+          </div>
+          {ready == false? <button onClick={readyUp}><b>Ready Up</b> (I'm a button! Press Me!)</button> : ( webSocket.state.gameState == null?
+            <div className="readyUp">
             <h2>Waiting for other players to ready up</h2>
+            </div>
             :
+            <div className="gameScreen">
             <GameUI />
+            </div>
           )
           }
+          <div className="chat">
           <ChatBox />
+          </div>
+          <div className="users">
           <OnlineUserList />
+          </div>
 
         </div>
       );

@@ -60,6 +60,8 @@ export const EntryPage = () => {
           <br />[No back to room button after game ends, you need to re-enter through root URL] [Spaghetti Code] [No actual "game board", it's just numbers] [Bad visual design]
           <br />
           <br />Source Code: https://github.com/punxe/fakefranchises
+          <br />
+          <br />Contact me on Discord: exe#1111
         </p>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { React } from 'react';
 
 import { useWebSocket, ACTIONS } from '../WebSocketContext';
 
+import "./ChallengeClaimCard.css";
 
 export const ChallengeClaimCard = ({ i }) => {
 
@@ -13,7 +14,7 @@ export const ChallengeClaimCard = ({ i }) => {
         webSocket.dispatch({ type: ACTIONS.NO_CHALLENGE, payload: { challenged: webSocket.state.gameState.players[i] } });
     }
     return (
-        <div>
+        <div className="ChallengeClaimCard">
             {webSocket.state.gameState.challengeResults[i][0] == 0 ?
                 <div>
                     <h3>{webSocket.state.gameState.players[i]} claims that they have a franchise on location {webSocket.state.gameState.playerLocations[webSocket.state.gameState.players[webSocket.state.gameState.whoseTurn]]}</h3>

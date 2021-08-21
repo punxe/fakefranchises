@@ -1,0 +1,42 @@
+.GamePage {
+    display: grid;
+    grid-template-columns: 25vw 70vw;
+    grid-template-rows: 10vh 42vh 42vh;
+    height: 96vh;
+    width: 96vw;
+    
+    padding-left:2vw;
+    padding-right: 2vw;
+    gap: 1vh;
+}
+.name {
+    justify-self: start;
+    align-self: start;
+    margin-left: 1rem;
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
+}
+.readyUp {
+    grid-row: 1 / 2;
+    grid-column: 2 / 3;
+}
+
+.gameScreen {
+    grid-row: 2 / 4;
+    grid-column: 2 / 3;
+
+}
+.chat {
+    justify-self: stretch;
+    grid-row: 2 / 3;
+    grid-column: 1 / 2;
+    height: 100%;
+}
+.users{
+    grid-row: 3 / 4;
+    grid-column: 1 / 2;
+}
+
+
+
+
