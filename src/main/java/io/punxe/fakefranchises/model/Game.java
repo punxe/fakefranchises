@@ -46,7 +46,7 @@ public class Game {
         for(int i = 0; i < playerAmount; i++){
             this.playerCoins.put(this.players[i], 3);
             setRandomProperty(this.players[i]);
-            this.playerLocations.put(this.players[i], 0);
+            this.playerLocations.put(this.players[i], 1);
             this.playerClaims.put(this.players[i], "null");
             this.playerBankrupt.put(this.players[i], "false");
         }
