@@ -213,8 +213,10 @@ public class Game {
         this.claimAmount = claimAmount;
     }
     public void transaction(String from, String to){
+        if(playerCoins.get(from) > 0){
+            playerCoins.put(to, playerCoins.get(to) + 1);
+        }
         playerCoins.put(from, playerCoins.get(from) - 1);
-        playerCoins.put(to, playerCoins.get(to) + 1);
     }
     public void resetChallengeResults(){
         challengeResults = new int[playerAmount][2];
