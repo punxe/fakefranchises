@@ -16,6 +16,7 @@ public class Game {
     private int whoseTurn;
     private String[] players;
     private int playerAmount;
+    private int numBoardSpaces;
     private String[] lastMove;
     private HashMap<String, String> playerClaims = new HashMap<String, String>();
     private HashMap<String, Integer> playerCoins = new HashMap<String, Integer>();
@@ -33,6 +34,7 @@ public class Game {
         this.prevTurn = 0;
         this.winner = "ThereIsNoWinnerYet00112233445566778899";
         this.playerAmount = players.size();
+        this.numBoardSpaces = playerAmount * 2;
         this.challengeResults = new int[this.playerAmount][2];
         this.players = new String[playerAmount];
         Iterator<String> itr = players.keySet().iterator();
@@ -44,15 +46,15 @@ public class Game {
         for(int i = 0; i < playerAmount; i++){
             this.playerCoins.put(this.players[i], 3);
             setRandomProperty(this.players[i]);
-            this.playerLocations.put(this.players[i], 0);
+            this.playerLocations.put(this.players[i], 1);
             this.playerClaims.put(this.players[i], "null");
             this.playerBankrupt.put(this.players[i], "false");
         }
     }
     public void setRandomProperty(String player){
-        int x = ThreadLocalRandom.current().nextInt(0, playerAmount*2);
+        int x = ThreadLocalRandom.current().nextInt(1, playerAmount*2 + 1);
         while(playerProperties.containsValue(x)){
-            x = ThreadLocalRandom.current().nextInt(0, playerAmount*2);
+            x = ThreadLocalRandom.current().nextInt(1, playerAmount*2 + 1);
         }
         playerProperties.put(player, x);
         
@@ -108,7 +110,16 @@ public class Game {
     public void movePlayer(String player, int steps){
         this.prevTurn = this.whoseTurn;
         int currentLoc = playerLocations.get(player);
-        int newLoc = (currentLoc + steps)%(playerAmount*2);
+        // below line will make franchises range from (0, n-1)
+        // int newLoc = (currentLoc + steps)%(playerAmount*2); 
+        // new line makes franchises range from (1, n)
+        int newLoc = currentLoc + steps;
+        if(newLoc > numBoardSpaces){
+            newLoc = newLoc % numBoardSpaces;
+            if(newLoc == 0){
+                newLoc = numBoardSpaces;
+            }
+        }
         playerLocations.put(player, newLoc);
         setLastMove(new String[]{player, Integer.toString(steps), Integer.toString(currentLoc), Integer.toString(newLoc)});
     }
