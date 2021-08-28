@@ -13,3 +13,6 @@ and then do
 and then 
 
 > npm i react-router-dom
+
+Contact me on Discord: exe#1111
+Special thanks to Spy#1418 and Bose#5468 for playtesting
