@@ -10,19 +10,21 @@ public class Player {
         ready = false;
     }
 
+    public boolean equals(Object obj){
+        if(!(obj instanceof Player)){
+            return false;
+        }
+        return this.getName().equals(((Player)obj).getName());
+    }
+
+    //The following are just getters and setters
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean equals(Object obj){
-        if(!(obj instanceof Player)){
-            return false;
-        }
-        return this.getName().equals(((Player)obj).getName());
     }
 
     public String getRoomCode() {

@@ -24,6 +24,10 @@ public class MenuController {
     @Autowired
 	private SimpMessageSendingOperations sendingOperations;
 
+
+    /**
+     * Add a new User to the server's database, then send an update to all clients
+     */
     @MessageMapping("/home.newUser")
     @SendTo("/topic/users/homepage")
     public UserListMessage registerNewUser(@Payload UserMessage userMessage, SimpMessageHeaderAccessor headerAccessor){
@@ -33,7 +37,9 @@ public class MenuController {
     }
 
     
-
+    /**
+     * Recieve a Create Room message from a user, then create a room and send an update to all clients
+     */
     @MessageMapping("/rooms.createRoom")
     @SendTo("/topic/rooms")
     public Room[] createRoom(@Payload RoomMessage roomMessage){
@@ -46,6 +52,9 @@ public class MenuController {
         return gameManager.getRoomList();
     }
 
+    /**
+     * Recieve a Join Room message from one user, then make that user join the room, then send an update to all clients
+     */
     @MessageMapping("/rooms.joinRoom")
     @SendTo("/topic/rooms")
     public Room[] joinRoom(@Payload RoomMessage roomMessage){
@@ -57,6 +66,9 @@ public class MenuController {
         return gameManager.getRoomList();
     }
 
+    /**
+     * Recieve an Update Rooms message from one user, then send an update regarding current rooms to all clients.
+     */
     @MessageMapping("/rooms.getRooms")
     @SendTo("/topic/rooms")
     public Room[] updateRoomsWhenNewUserEnters(){

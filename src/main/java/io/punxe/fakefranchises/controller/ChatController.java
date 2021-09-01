@@ -13,14 +13,20 @@ import io.punxe.fakefranchises.manager.GameManager;
 @Controller
 
 public class ChatController {
-
+    
     private GameManager gameManager;
     
+    /**
+     * Dependency injection on gameManager.
+     */
     @Autowired
     public ChatController(GameManager gameManager){
         this.gameManager = gameManager;
     }
 
+    /**
+     * Recieve a Chat Message from one user, then send an update to the chatroom of the corresponding user
+     */
     @MessageMapping("/chat.sendMessage/{room}")
     @SendTo("/topic/chat/{room}")
     public ChatMessage manageChatMessage(@DestinationVariable String room, @Payload ChatMessage chatMessage){      

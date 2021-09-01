@@ -14,17 +14,24 @@ import io.punxe.fakefranchises.model.Room;
 
 @Component
 public class WebSocketEventListener {
+	
 	@Autowired
 	private GameManager gameManager;
 
 	@Autowired
 	private SimpMessageSendingOperations sendingOperations;
 
+	/**
+	 * When a new websocket connection is made, do nothing.
+	 */
 	@EventListener
 	public void handleWebSocketConnectListener(final SessionConnectedEvent event) {
 
 	}
 
+	/**
+	 * When a current websocket connection disconnects, remove the correspnding player from the server and send an update to all clients
+	 */
 	@EventListener
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
